@@ -139,8 +139,8 @@ struct SubTeamRow: View {
             }
         }
         .padding(.vertical, 8)
-        .onAppear {
-            userViewModel.fetchUsers(userIds: [team.leaderId])
+        .task {
+            userViewModel.fetchUser(userId: team.leaderId)
         }
     }
 }

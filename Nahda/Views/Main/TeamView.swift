@@ -67,6 +67,9 @@ struct TeamView: View {
             }
             
             VStack(spacing: 0) {
+                StoriesSection(team: team)
+                    .padding(.vertical, 8)
+                
                 // Custom segmented control
                 TeamViewTabBar(selection: $selectedTab)
                 

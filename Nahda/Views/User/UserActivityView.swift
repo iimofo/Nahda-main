@@ -3,47 +3,11 @@ import SwiftUI
 struct UserActivityView: View {
     let userId: String
     @StateObject private var userViewModel = UserViewModel()
-    @State private var selectedTimeframe: Timeframe = .week
-    
-    enum Timeframe: String, CaseIterable {
-        case day = "24h"
-        case week = "Week"
-        case month = "Month"
-    }
-    
-    var filteredActivities: [UserActivity] {
-        guard let activities = userViewModel.users[userId]?.activityHistory else { return [] }
-        
-        let cutoff: Date
-        switch selectedTimeframe {
-        case .day:
-            cutoff = Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date()
-        case .week:
-            cutoff = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
-        case .month:
-            cutoff = Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date()
-        }
-        
-        return activities.filter { $0.timestamp >= cutoff }
-    }
     
     var body: some View {
-        List {
-            Section {
-                Picker("Timeframe", selection: $selectedTimeframe) {
-                    ForEach(Timeframe.allCases, id: \.self) { timeframe in
-                        Text(timeframe.rawValue).tag(timeframe)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .padding(.vertical, 8)
-            }
-            
-            ForEach(filteredActivities) { activity in
-                ActivityRow(activity: activity)
-            }
+        List(userViewModel.getActivities(for: userId)) { activity in
+            ActivityRow(activity: activity)
         }
-        .navigationTitle("Activity History")
         .onAppear {
             userViewModel.startListeningToActivity(for: userId)
         }

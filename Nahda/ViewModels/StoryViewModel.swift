@@ -67,4 +67,34 @@ class StoryViewModel: ObservableObject {
             }
         }
     }
+    
+    func fetchStories(for teamId: String, completion: @escaping (Bool) -> Void) {
+        print("📱 Fetching stories for team: \(teamId)")
+        
+        let now = Date()
+        db.collection("stories")
+            .whereField("teamId", isEqualTo: teamId)
+            .whereField("expiresAt", isGreaterThan: now)
+            .order(by: "expiresAt", descending: false)
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("❌ Error fetching stories: \(error.localizedDescription)")
+                    completion(false)
+                    return
+                }
+                
+                guard let documents = snapshot?.documents else {
+                    print("❌ No documents found")
+                    completion(false)
+                    return
+                }
+                
+                print("✅ Found \(documents.count) stories")
+                self.stories = documents.compactMap { document in
+                    try? document.data(as: Story.self)
+                }
+                
+                completion(true)
+            }
+    }
 } 
