@@ -32,6 +32,11 @@ struct TeamView: View {
     private let db = Firestore.firestore()
     @State private var showTeamMembers = false
     @State private var showExpandingButtons = false
+    @State private var showImagePicker = false
+    @State private var selectedImage: UIImage?
+    @State private var imageSource: UIImagePickerController.SourceType = .photoLibrary
+    @StateObject private var storyViewModel = StoryViewModel()
+    @State private var showImageSourceSheet = false
 
     init(team: Team) {
         self.team = team
@@ -65,21 +70,24 @@ struct TeamView: View {
                 // Custom segmented control
                 TeamViewTabBar(selection: $selectedTab)
                 
-                TabView(selection: $selectedTab) {
-                    TasksView(
-                        tasks: taskViewModel.tasks, 
-                        team: team,
-                        taskViewModel: taskViewModel
-                    )
-                    .tag(TeamViewTab.tasks)
-                    
-                    ActivityFeedView(team: team)
-                        .tag(TeamViewTab.activity)
-                    
-                    TeamAnalyticsView(team: team, tasks: taskViewModel.tasks)
-                        .tag(TeamViewTab.analytics)
+                // Main content
+                Group {
+                    switch selectedTab {
+                    case .tasks:
+                        TasksView(
+                            tasks: taskViewModel.tasks, 
+                            team: team,
+                            taskViewModel: taskViewModel
+                        )
+                        
+                    case .activity:
+                        ActivityFeedView(team: team)
+                        
+                    case .analytics:
+                        TeamAnalyticsView(team: team, tasks: taskViewModel.tasks)
+                    }
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
+                .animation(.default, value: selectedTab)
             }
             
             // Add floating action button with animated position
@@ -91,6 +99,26 @@ struct TeamView: View {
             }
         }
         .navigationTitle(team.name)
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarItems(
+            trailing: HStack(spacing: 16) {
+                // Team members button
+                Button(action: { showTeamMembers.toggle() }) {
+                    Image(systemName: "person.2")
+                        .imageScale(.large)
+                        .frame(minWidth: 44, minHeight: 44)
+                }
+                
+                // Story button (only for team leader)
+                if isTeamLeader {
+                    Button(action: { showImageSourceSheet.toggle() }) {
+                        Image(systemName: "plus.circle")
+                            .imageScale(.large)
+                            .frame(minWidth: 44, minHeight: 44)
+                    }
+                }
+            }
+        )
         .task {
             await fetchInitialData()
         }
@@ -125,6 +153,35 @@ struct TeamView: View {
                 onRemoveMember: removeMember,
                 onAppear: { fetchMembers() }
             )
+        }
+        .confirmationDialog(
+            "Select Image Source",
+            isPresented: $showImageSourceSheet,
+            titleVisibility: .visible
+        ) {
+            Button("Camera") {
+                imageSource = .camera
+                showImagePicker = true
+            }
+            
+            Button("Photo Library") {
+                imageSource = .photoLibrary
+                showImagePicker = true
+            }
+            
+            Button("Cancel", role: .cancel) {}
+        }
+        .sheet(isPresented: $showImagePicker) {
+            ImagePickerView(
+                imageSource: $imageSource,
+                selectedImage: $selectedImage
+            )
+        }
+        .onChange(of: selectedImage) { newImage in
+            if newImage != nil {
+                print("🖼️ New image selected, starting upload...")
+                addStory()
+            }
         }
     }
 
@@ -364,6 +421,43 @@ struct TeamView: View {
                         }
                     }
             }
+        }
+    }
+
+    private func addStory() {
+        if let image = selectedImage {
+            guard let userId = authViewModel.currentUser?.id else {
+                print("❌ No current user ID found")
+                errorMessage = "User not authenticated"
+                showError = true
+                return
+            }
+            
+            guard let teamId = team.id else {
+                print("❌ No team ID found")
+                errorMessage = "Invalid team"
+                showError = true
+                return
+            }
+            
+            print("🚀 Starting story upload...")
+            print("Image size: \(image.size)")
+            
+            storyViewModel.uploadStory(image: image, teamId: teamId, userId: userId) { success in
+                DispatchQueue.main.async {
+                    if success {
+                        print("✅ Story upload completed successfully")
+                        self.selectedImage = nil
+                        self.showImagePicker = false
+                    } else {
+                        print("❌ Story upload failed")
+                        self.errorMessage = "Failed to upload story"
+                        self.showError = true
+                    }
+                }
+            }
+        } else {
+            showImageSourceSheet.toggle()
         }
     }
 }
