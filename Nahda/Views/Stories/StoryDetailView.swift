@@ -51,7 +51,7 @@ struct StoryDetailView: View {
                         
                         // Story Image
                         Spacer()
-                        StoryContent(imageUrl: stories[currentIndex].imageUrl)
+                        StoryContent(imageUrl: stories[currentIndex].imageUrl, storyViewModel: StoryViewModel())
                         Spacer()
                     }
                     
@@ -230,16 +230,25 @@ struct StoryHeader: View {
 
 struct StoryContent: View {
     let imageUrl: String
+    @ObservedObject var storyViewModel: StoryViewModel
     
     var body: some View {
-        AsyncImage(url: URL(string: imageUrl)) { image in
-            image
-                .resizable()
-                .scaledToFit()
-                .transition(.opacity.animation(.easeInOut(duration: 0.3)))
-        } placeholder: {
-            ProgressView()
-                .foregroundColor(.white)
+        Group {
+            if let cachedImage = storyViewModel.getCachedImage(for: imageUrl) {
+                Image(uiImage: cachedImage)
+                    .resizable()
+                    .scaledToFit()
+            } else {
+                AsyncImage(url: URL(string: imageUrl)) { image in
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .transition(.opacity.animation(.easeInOut(duration: 0.3)))
+                } placeholder: {
+                    ProgressView()
+                        .foregroundColor(.white)
+                }
+            }
         }
     }
 }
