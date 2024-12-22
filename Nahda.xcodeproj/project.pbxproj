@@ -1,0 +1,659 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CE4157982CFF9D8600FCE7BE /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = CE4157972CFF9D8600FCE7BE /* DGCharts */; };
+		CED39ACA2D01B130009D7994 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = CED39AC92D01B130009D7994 /* FirebaseDatabase */; };
+		CEF0B6112CFC869A00F3172B /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CEF0B6102CFC869A00F3172B /* FirebaseAuth */; };
+		CEF0B6132CFC869A00F3172B /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = CEF0B6122CFC869A00F3172B /* FirebaseFirestore */; };
+		CEF0B6152CFC869A00F3172B /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = CEF0B6142CFC869A00F3172B /* FirebaseStorage */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CEF0B5E22CFC840D00F3172B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEF0B5C92CFC840C00F3172B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CEF0B5D02CFC840C00F3172B;
+			remoteInfo = Nahda;
+		};
+		CEF0B5EC2CFC840D00F3172B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEF0B5C92CFC840C00F3172B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CEF0B5D02CFC840C00F3172B;
+			remoteInfo = Nahda;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		CEF0B5D12CFC840C00F3172B /* Nahda.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nahda.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEF0B5E12CFC840D00F3172B /* NahdaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NahdaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEF0B5EB2CFC840D00F3172B /* NahdaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NahdaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CE6EFD7D2CFCCF290079C8E1 /* Exceptions for "Nahda" folder in "Nahda" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CEF0B5D02CFC840C00F3172B /* Nahda */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		CEF0B5D32CFC840C00F3172B /* Nahda */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CE6EFD7D2CFCCF290079C8E1 /* Exceptions for "Nahda" folder in "Nahda" target */,
+			);
+			path = Nahda;
+			sourceTree = "<group>";
+		};
+		CEF0B5E42CFC840D00F3172B /* NahdaTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NahdaTests;
+			sourceTree = "<group>";
+		};
+		CEF0B5EE2CFC840D00F3172B /* NahdaUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NahdaUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CEF0B5CE2CFC840C00F3172B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CED39ACA2D01B130009D7994 /* FirebaseDatabase in Frameworks */,
+				CE4157982CFF9D8600FCE7BE /* DGCharts in Frameworks */,
+				CEF0B6112CFC869A00F3172B /* FirebaseAuth in Frameworks */,
+				CEF0B6132CFC869A00F3172B /* FirebaseFirestore in Frameworks */,
+				CEF0B6152CFC869A00F3172B /* FirebaseStorage in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEF0B5DE2CFC840D00F3172B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEF0B5E82CFC840D00F3172B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CED39AC82D01B130009D7994 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CEF0B5C82CFC840C00F3172B = {
+			isa = PBXGroup;
+			children = (
+				CEF0B5D32CFC840C00F3172B /* Nahda */,
+				CEF0B5E42CFC840D00F3172B /* NahdaTests */,
+				CEF0B5EE2CFC840D00F3172B /* NahdaUITests */,
+				CED39AC82D01B130009D7994 /* Frameworks */,
+				CEF0B5D22CFC840C00F3172B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CEF0B5D22CFC840C00F3172B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CEF0B5D12CFC840C00F3172B /* Nahda.app */,
+				CEF0B5E12CFC840D00F3172B /* NahdaTests.xctest */,
+				CEF0B5EB2CFC840D00F3172B /* NahdaUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CEF0B5D02CFC840C00F3172B /* Nahda */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CEF0B5F52CFC840D00F3172B /* Build configuration list for PBXNativeTarget "Nahda" */;
+			buildPhases = (
+				CEF0B5CD2CFC840C00F3172B /* Sources */,
+				CEF0B5CE2CFC840C00F3172B /* Frameworks */,
+				CEF0B5CF2CFC840C00F3172B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CEF0B5D32CFC840C00F3172B /* Nahda */,
+			);
+			name = Nahda;
+			packageProductDependencies = (
+				CEF0B6102CFC869A00F3172B /* FirebaseAuth */,
+				CEF0B6122CFC869A00F3172B /* FirebaseFirestore */,
+				CEF0B6142CFC869A00F3172B /* FirebaseStorage */,
+				CE4157972CFF9D8600FCE7BE /* DGCharts */,
+				CED39AC92D01B130009D7994 /* FirebaseDatabase */,
+			);
+			productName = Nahda;
+			productReference = CEF0B5D12CFC840C00F3172B /* Nahda.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CEF0B5E02CFC840D00F3172B /* NahdaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CEF0B5F82CFC840D00F3172B /* Build configuration list for PBXNativeTarget "NahdaTests" */;
+			buildPhases = (
+				CEF0B5DD2CFC840D00F3172B /* Sources */,
+				CEF0B5DE2CFC840D00F3172B /* Frameworks */,
+				CEF0B5DF2CFC840D00F3172B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CEF0B5E32CFC840D00F3172B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CEF0B5E42CFC840D00F3172B /* NahdaTests */,
+			);
+			name = NahdaTests;
+			packageProductDependencies = (
+			);
+			productName = NahdaTests;
+			productReference = CEF0B5E12CFC840D00F3172B /* NahdaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CEF0B5EA2CFC840D00F3172B /* NahdaUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CEF0B5FB2CFC840D00F3172B /* Build configuration list for PBXNativeTarget "NahdaUITests" */;
+			buildPhases = (
+				CEF0B5E72CFC840D00F3172B /* Sources */,
+				CEF0B5E82CFC840D00F3172B /* Frameworks */,
+				CEF0B5E92CFC840D00F3172B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CEF0B5ED2CFC840D00F3172B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CEF0B5EE2CFC840D00F3172B /* NahdaUITests */,
+			);
+			name = NahdaUITests;
+			packageProductDependencies = (
+			);
+			productName = NahdaUITests;
+			productReference = CEF0B5EB2CFC840D00F3172B /* NahdaUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CEF0B5C92CFC840C00F3172B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1610;
+				LastUpgradeCheck = 1610;
+				TargetAttributes = {
+					CEF0B5D02CFC840C00F3172B = {
+						CreatedOnToolsVersion = 16.1;
+					};
+					CEF0B5E02CFC840D00F3172B = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = CEF0B5D02CFC840C00F3172B;
+					};
+					CEF0B5EA2CFC840D00F3172B = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = CEF0B5D02CFC840C00F3172B;
+					};
+				};
+			};
+			buildConfigurationList = CEF0B5CC2CFC840C00F3172B /* Build configuration list for PBXProject "Nahda" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CEF0B5C82CFC840C00F3172B;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				CEF0B60F2CFC869A00F3172B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				CE4157962CFF9D8600FCE7BE /* XCRemoteSwiftPackageReference "Charts" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = CEF0B5D22CFC840C00F3172B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CEF0B5D02CFC840C00F3172B /* Nahda */,
+				CEF0B5E02CFC840D00F3172B /* NahdaTests */,
+				CEF0B5EA2CFC840D00F3172B /* NahdaUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CEF0B5CF2CFC840C00F3172B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEF0B5DF2CFC840D00F3172B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEF0B5E92CFC840D00F3172B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CEF0B5CD2CFC840C00F3172B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEF0B5DD2CFC840D00F3172B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEF0B5E72CFC840D00F3172B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CEF0B5E32CFC840D00F3172B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CEF0B5D02CFC840C00F3172B /* Nahda */;
+			targetProxy = CEF0B5E22CFC840D00F3172B /* PBXContainerItemProxy */;
+		};
+		CEF0B5ED2CFC840D00F3172B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CEF0B5D02CFC840C00F3172B /* Nahda */;
+			targetProxy = CEF0B5EC2CFC840D00F3172B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		CEF0B5F32CFC840D00F3172B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CEF0B5F42CFC840D00F3172B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CEF0B5F62CFC840D00F3172B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Nahda/Preview Content\"";
+				DEVELOPMENT_TEAM = 68B9YHYA25;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Nahda/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need camera access to take photos for task completion.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need photo library access to select images for task completion.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = iq.mofo.Nahda;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CEF0B5F72CFC840D00F3172B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Nahda/Preview Content\"";
+				DEVELOPMENT_TEAM = 68B9YHYA25;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Nahda/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need camera access to take photos for task completion.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need photo library access to select images for task completion.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = iq.mofo.Nahda;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CEF0B5F92CFC840D00F3172B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5ZJ8B8VBZ6;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = iq.mofo.NahdaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nahda.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Nahda";
+			};
+			name = Debug;
+		};
+		CEF0B5FA2CFC840D00F3172B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5ZJ8B8VBZ6;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = iq.mofo.NahdaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nahda.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Nahda";
+			};
+			name = Release;
+		};
+		CEF0B5FC2CFC840D00F3172B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5ZJ8B8VBZ6;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = iq.mofo.NahdaUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Nahda;
+			};
+			name = Debug;
+		};
+		CEF0B5FD2CFC840D00F3172B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5ZJ8B8VBZ6;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = iq.mofo.NahdaUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Nahda;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CEF0B5CC2CFC840C00F3172B /* Build configuration list for PBXProject "Nahda" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CEF0B5F32CFC840D00F3172B /* Debug */,
+				CEF0B5F42CFC840D00F3172B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CEF0B5F52CFC840D00F3172B /* Build configuration list for PBXNativeTarget "Nahda" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CEF0B5F62CFC840D00F3172B /* Debug */,
+				CEF0B5F72CFC840D00F3172B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CEF0B5F82CFC840D00F3172B /* Build configuration list for PBXNativeTarget "NahdaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CEF0B5F92CFC840D00F3172B /* Debug */,
+				CEF0B5FA2CFC840D00F3172B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CEF0B5FB2CFC840D00F3172B /* Build configuration list for PBXNativeTarget "NahdaUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CEF0B5FC2CFC840D00F3172B /* Debug */,
+				CEF0B5FD2CFC840D00F3172B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CE4157962CFF9D8600FCE7BE /* XCRemoteSwiftPackageReference "Charts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/danielgindi/Charts.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.1.0;
+			};
+		};
+		CEF0B60F2CFC869A00F3172B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CE4157972CFF9D8600FCE7BE /* DGCharts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE4157962CFF9D8600FCE7BE /* XCRemoteSwiftPackageReference "Charts" */;
+			productName = DGCharts;
+		};
+		CED39AC92D01B130009D7994 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEF0B60F2CFC869A00F3172B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		CEF0B6102CFC869A00F3172B /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEF0B60F2CFC869A00F3172B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		CEF0B6122CFC869A00F3172B /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEF0B60F2CFC869A00F3172B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		CEF0B6142CFC869A00F3172B /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEF0B60F2CFC869A00F3172B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = CEF0B5C92CFC840C00F3172B /* Project object */;
+}
