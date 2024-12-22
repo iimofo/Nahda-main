@@ -3,7 +3,8 @@ import Firebase
 import FirebaseStorage
 
 class StoryViewModel: ObservableObject {
-    @Published var stories: [Story] = []
+    @Published private(set) var stories: [Story] = []
+    @Published private(set) var storiesByUser: [String: [Story]] = [:]
     private let storage = Storage.storage()
     private let db = Firestore.firestore()
     
@@ -68,6 +69,13 @@ class StoryViewModel: ObservableObject {
         }
     }
     
+    private func groupStoriesByUser() {
+        let grouped = Dictionary(grouping: stories) { $0.userId }
+        DispatchQueue.main.async {
+            self.storiesByUser = grouped
+        }
+    }
+    
     func fetchStories(for teamId: String, completion: @escaping (Bool) -> Void) {
         print("📱 Fetching stories for team: \(teamId)")
         
@@ -76,7 +84,7 @@ class StoryViewModel: ObservableObject {
             .whereField("teamId", isEqualTo: teamId)
             .whereField("expiresAt", isGreaterThan: now)
             .order(by: "expiresAt", descending: false)
-            .getDocuments { snapshot, error in
+            .getDocuments { [weak self] snapshot, error in
                 if let error = error {
                     print("❌ Error fetching stories: \(error.localizedDescription)")
                     completion(false)
@@ -90,10 +98,11 @@ class StoryViewModel: ObservableObject {
                 }
                 
                 print("✅ Found \(documents.count) stories")
-                self.stories = documents.compactMap { document in
+                self?.stories = documents.compactMap { document in
                     try? document.data(as: Story.self)
                 }
                 
+                self?.groupStoriesByUser()
                 completion(true)
             }
     }

@@ -3,7 +3,7 @@ import SwiftUI
 struct StoriesSection: View {
     let team: Team
     @StateObject private var storyViewModel = StoryViewModel()
-    @State private var selectedStory: Story?
+    @State private var selectedUserStories: UserStories?
     @State private var isLoading = true
     
     var body: some View {
@@ -19,11 +19,19 @@ struct StoriesSection: View {
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(spacing: 12) {
-                        ForEach(storyViewModel.stories) { story in
-                            StoryPreviewView(story: story)
+                        ForEach(Array(storyViewModel.storiesByUser.keys.sorted()), id: \.self) { userId in
+                            if let userStories = storyViewModel.storiesByUser[userId] {
+                                UserStoryPreview(
+                                    userId: userId,
+                                    stories: userStories
+                                )
                                 .onTapGesture {
-                                    selectedStory = story
+                                    selectedUserStories = UserStories(
+                                        userId: userId,
+                                        stories: userStories
+                                    )
                                 }
+                            }
                         }
                     }
                     .padding(.horizontal)
@@ -34,8 +42,12 @@ struct StoriesSection: View {
         .onAppear {
             fetchStories()
         }
-        .sheet(item: $selectedStory) { story in
-            StoryDetailView(story: story)
+        .sheet(item: $selectedUserStories) { userStories in
+            StoryDetailView(
+                story: userStories.stories[0],
+                stories: userStories.stories
+            )
+            .edgesIgnoringSafeArea(.all)
         }
     }
     
@@ -47,32 +59,54 @@ struct StoriesSection: View {
     }
 }
 
-struct StoryPreviewView: View {
-    let story: Story
+struct UserStoryPreview: View {
+    let userId: String
+    let stories: [Story]
     @StateObject private var userViewModel = UserViewModel()
     
     var body: some View {
         VStack {
-            AsyncImage(url: URL(string: story.imageUrl)) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-            } placeholder: {
-                Color.gray.opacity(0.3)
-            }
-            .frame(width: 60, height: 60)
-            .clipShape(Circle())
-            .overlay(
+            ZStack {
+                // Story ring
                 Circle()
                     .stroke(Color.blue, lineWidth: 2)
-            )
+                    .frame(width: 64, height: 64)
+                
+                // User avatar or initial
+                AsyncImage(url: URL(string: stories.first?.imageUrl ?? "")) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                } placeholder: {
+                    Circle()
+                        .fill(Color.gray.opacity(0.3))
+                        .overlay(
+                            Text(userViewModel.userName(for: userId).prefix(1))
+                                .font(.title3)
+                                .bold()
+                        )
+                }
+                .frame(width: 60, height: 60)
+                .clipShape(Circle())
+                
+                // Story count indicator if more than one
+                if stories.count > 1 {
+                    Text("\(stories.count)")
+                        .font(.caption2)
+                        .foregroundColor(.white)
+                        .padding(4)
+                        .background(Color.blue)
+                        .clipShape(Circle())
+                        .offset(x: 20, y: -20)
+                }
+            }
             
-            Text(userViewModel.userName(for: story.userId))
+            Text(userViewModel.userName(for: userId))
                 .font(.caption)
                 .lineLimit(1)
         }
         .task {
-            userViewModel.fetchUser(userId: story.userId)
+            userViewModel.fetchUser(userId: userId)
         }
     }
 } 
