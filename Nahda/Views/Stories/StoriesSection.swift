@@ -2,6 +2,7 @@ import SwiftUI
 
 struct StoriesSection: View {
     let team: Team
+    @EnvironmentObject var authViewModel: AuthViewModel
     @StateObject private var storyViewModel = StoryViewModel()
     @State private var selectedUserStories: UserStories?
     @State private var isLoading = true
@@ -45,9 +46,15 @@ struct StoriesSection: View {
         .sheet(item: $selectedUserStories) { userStories in
             StoryDetailView(
                 story: userStories.stories[0],
-                stories: userStories.stories
+                stories: userStories.stories,
+                team: team
             )
+            .environmentObject(authViewModel)
+            .environmentObject(storyViewModel)
             .edgesIgnoringSafeArea(.all)
+            .onDisappear {
+                fetchStories()
+            }
         }
     }
     

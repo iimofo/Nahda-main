@@ -1,8 +1,13 @@
 import SwiftUI
+import FirebaseAuth
+import FirebaseFirestore
+import FirebaseStorage
 
 struct StoryDetailView: View {
     let story: Story
     let stories: [Story]
+    let team: Team
+    @EnvironmentObject var authViewModel: AuthViewModel
     @State private var currentIndex: Int
     @Environment(\.dismiss) private var dismiss
     @StateObject private var userViewModel = UserViewModel()
@@ -11,15 +16,25 @@ struct StoryDetailView: View {
     @State private var isPaused: Bool = false
     @State private var dragOffset: CGFloat = 0
     @GestureState private var isLongPressed = false
+    @State private var showDeleteAlert = false
+    @State private var isDeleting = false
+    @State private var errorMessage: String?
+    @State private var showError = false
+    @StateObject private var storyViewModel = StoryViewModel()
     
     // Constants for better customization
     private let storyDuration: TimeInterval = 5.0
     private let progressUpdateInterval: TimeInterval = 0.05
     private let dragThreshold: CGFloat = 50
     
-    init(story: Story, stories: [Story]) {
+    // Add Firebase references
+    private let storage = Storage.storage()
+    private let db = Firestore.firestore()
+    
+    init(story: Story, stories: [Story], team: Team) {
         self.story = story
         self.stories = stories
+        self.team = team
         self._currentIndex = State(initialValue: stories.firstIndex(where: { $0.id == story.id }) ?? 0)
     }
     
@@ -28,77 +43,95 @@ struct StoryDetailView: View {
             ZStack {
                 Color.black.edgesIgnoringSafeArea(.all)
                 
-                // Story Content
-                if currentIndex < stories.count {
-                    VStack(spacing: 0) {
-                        // Progress bars
-                        HStack(spacing: 4) {
-                            ForEach(Array(stories.enumerated()), id: \.element.id) { index, _ in
-                                ProgressBar(
-                                    progress: index == currentIndex ? progress : (index < currentIndex ? 1 : 0)
-                                )
-                            }
+                VStack(spacing: 0) {
+                    // Progress bars
+                    HStack(spacing: 4) {
+                        ForEach(Array(stories.enumerated()), id: \.element.id) { index, _ in
+                            ProgressBar(
+                                progress: index == currentIndex ? progress : (index < currentIndex ? 1 : 0)
+                            )
                         }
-                        .padding(.horizontal)
-                        .padding(.top, 10)
-                        
-                        // User info header
-                        StoryHeader(
-                            userName: userViewModel.userName(for: stories[currentIndex].userId),
-                            timestamp: stories[currentIndex].timestamp,
-                            onClose: { dismiss() }
-                        )
-                        
-                        // Story Image
-                        Spacer()
-                        StoryContent(imageUrl: stories[currentIndex].imageUrl, storyViewModel: StoryViewModel())
-                        Spacer()
                     }
+                    .padding(.horizontal)
+                    .padding(.top, 10)
                     
-                    // Navigation overlay
-                    HStack(spacing: 0) {
-                        Color.clear
-                            .contentShape(Rectangle())
-                            .frame(width: geometry.size.width * 0.3)
-                            .onTapGesture {
-                                navigateToPrevious()
-                            }
+                    // User info header
+                    StoryHeader(
+                        userName: userViewModel.userName(for: stories[currentIndex].userId),
+                        timestamp: stories[currentIndex].timestamp,
+                        onClose: { 
+                            print("🚪 Close action triggered")
+                            dismiss() 
+                        },
+                        onDelete: { },
+                        isTeamLeader: isTeamLeader,
+                        showDeleteAlert: $showDeleteAlert
+                    )
+                    .allowsHitTesting(true)
+                    
+                    // Story Content with overlay
+                    ZStack(alignment: .bottomTrailing) {
+                        // Story content
+                        VStack {
+                            Spacer()
+                            StoryContent(imageUrl: stories[currentIndex].imageUrl, storyViewModel: StoryViewModel())
+                            Spacer()
+                        }
                         
-                        Color.clear
-                            .contentShape(Rectangle())
-                            .frame(width: geometry.size.width * 0.4)
-                        
-                        Color.clear
-                            .contentShape(Rectangle())
-                            .frame(width: geometry.size.width * 0.3)
-                            .onTapGesture {
-                                navigateToNext()
-                            }
+                        // Delete button overlay
+//                        if isTeamLeader {
+//                            Button {
+//                                print("🗑️ Delete button tapped")
+//                                showDeleteAlert = true
+//                            } label: {
+//                                Image(systemName: "trash")
+//                                    .foregroundColor(.red)
+//                                    .font(.system(size: 22))
+//                                    .frame(width: 44, height: 44)
+//                                    .background(Color.black.opacity(0.6))
+//                                    .clipShape(Circle())
+//                            }
+//                            .buttonStyle(BorderlessButtonStyle())
+//                            .padding(.trailing, 20)
+//                            .padding(.bottom, 40)
+//                            .allowsHitTesting(true)
+//                            .zIndex(1)
+//                        }
                     }
+                }
+                
+                // Navigation overlay
+                HStack(spacing: 0) {
+                    Color.clear
+                        .contentShape(Rectangle())
+                        .frame(width: geometry.size.width * 0.3)
+                        .onTapGesture {
+                            navigateToPrevious()
+                        }
+                    
+                    Color.clear
+                        .contentShape(Rectangle())
+                        .frame(width: geometry.size.width * 0.4)
+                    
+                    Color.clear
+                        .contentShape(Rectangle())
+                        .frame(width: geometry.size.width * 0.3)
+                        .onTapGesture {
+                            navigateToNext()
+                        }
                 }
             }
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { _ in
-                        // Pause when touch starts
                         if !isPaused {
                             pauseStory()
                         }
                     }
                     .onEnded { _ in
-                        // Resume when touch ends
                         if isPaused {
                             resumeStory()
                         }
-                    }
-            )
-            .simultaneousGesture(
-                DragGesture(minimumDistance: 20)
-                    .onChanged { value in
-                        dragOffset = value.translation.width
-                    }
-                    .onEnded { value in
-                        handleDragGesture(value)
                     }
             )
         }
@@ -108,6 +141,54 @@ struct StoryDetailView: View {
         }
         .onDisappear {
             stopTimer()
+        }
+        .alert("Delete Story?", isPresented: $showDeleteAlert) {
+            Button("Cancel", role: .cancel) { 
+                print("❌ Delete cancelled")
+                showDeleteAlert = false
+            }
+            
+            Button("Delete", role: .destructive) {
+                print("✅ Delete confirmed")
+                _Concurrency.Task {
+                    guard let storyId = stories[currentIndex].id,
+                          let teamId = team.id else {
+                        print("❌ Missing IDs")
+                        return
+                    }
+                    
+                    do {
+                        print("🗑️ Deleting story: \(storyId)")
+                        
+                        // Delete from Firestore
+                        let storyRef = db.collection("teams")
+                            .document(teamId)
+                            .collection("stories")
+                            .document(storyId)
+                        try await storyRef.delete()
+                        
+                        // Delete image if exists
+                        if !stories[currentIndex].imageUrl.isEmpty {
+                            let storageRef = storage.reference(forURL: stories[currentIndex].imageUrl)
+                            try await storageRef.delete()
+                        }
+                        
+                        print("✅ Story deleted successfully")
+                        dismiss()
+                    } catch {
+                        print("❌ Delete error: \(error.localizedDescription)")
+                        showError = true
+                        errorMessage = "Failed to delete story"
+                    }
+                }
+            }
+        } message: {
+            Text("This action cannot be undone.")
+        }
+        .alert("Error", isPresented: $showError) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(errorMessage ?? "An unknown error occurred")
         }
     }
     
@@ -179,6 +260,16 @@ struct StoryDetailView: View {
         progress = 0
         startTimer()
     }
+    
+    private var isTeamLeader: Bool {
+        guard let currentUserId = Auth.auth().currentUser?.uid else { 
+            print("❌ No current user ID")
+            return false 
+        }
+        print("🔑 Current User ID: \(currentUserId)")
+        print("👑 Team Leader ID: \(team.leaderId)")
+        return currentUserId == team.leaderId
+    }
 }
 
 // MARK: - Supporting Views
@@ -186,9 +277,13 @@ struct StoryHeader: View {
     let userName: String
     let timestamp: Date
     let onClose: () -> Void
+    let onDelete: () -> Void
+    let isTeamLeader: Bool
+    @Binding var showDeleteAlert: Bool
     
     var body: some View {
         HStack {
+            // User info
             HStack(spacing: 8) {
                 Circle()
                     .fill(Color.gray.opacity(0.3))
@@ -203,26 +298,25 @@ struct StoryHeader: View {
                     Text(userName)
                         .font(.headline)
                         .foregroundColor(.white)
-                    
                     Text(timestamp, style: .relative)
                         .font(.caption)
                         .foregroundColor(.white.opacity(0.8))
                 }
             }
-            .padding()
-            .background(.ultraThinMaterial)
-            .cornerRadius(20)
             
             Spacer()
             
+            // Only close button
             Button(action: onClose) {
                 Image(systemName: "xmark")
-                    .font(.title2)
                     .foregroundColor(.white)
-                    .padding(12)
-                    .background(.ultraThinMaterial)
+                    .font(.system(size: 20))
+                    .frame(width: 44, height: 44)
+                    .background(Color.black.opacity(0.3))
                     .clipShape(Circle())
             }
+            .buttonStyle(BorderlessButtonStyle())
+            .padding(.horizontal)
         }
         .padding()
     }
