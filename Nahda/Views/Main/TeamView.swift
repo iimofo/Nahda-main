@@ -7,6 +7,7 @@
 // TeamView.swift
 import SwiftUI
 import Firebase
+import FirebaseAuth
 
 
 struct TeamView: View {
@@ -37,6 +38,8 @@ struct TeamView: View {
     @State private var imageSource: UIImagePickerController.SourceType = .photoLibrary
     @StateObject private var storyViewModel = StoryViewModel()
     @State private var showImageSourceSheet = false
+    @State private var showLeaveTeamAlert = false
+    @Environment(\.dismiss) private var dismiss
 
     init(team: Team) {
         self.team = team
@@ -105,6 +108,16 @@ struct TeamView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(
             trailing: HStack(spacing: 16) {
+                // Leave team button (only for non-leaders)
+                if !isTeamLeader {
+                    Button(action: { showLeaveTeamAlert = true }) {
+                        Image(systemName: "rectangle.portrait.and.arrow.right")
+                            .foregroundColor(.red)
+                            .imageScale(.large)
+                            .frame(minWidth: 44, minHeight: 44)
+                    }
+                }
+                
                 // Team members button
                 Button(action: { showTeamMembers.toggle() }) {
                     Image(systemName: "person.2")
@@ -185,6 +198,16 @@ struct TeamView: View {
                 print("🖼️ New image selected, starting upload...")
                 addStory()
             }
+        }
+        .alert("Leave Team?", isPresented: $showLeaveTeamAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Leave", role: .destructive) {
+                _Concurrency.Task {
+                    await leaveTeam()
+                }
+            }
+        } message: {
+            Text("Are you sure you want to leave this team? This action cannot be undone.")
         }
     }
 
@@ -461,6 +484,39 @@ struct TeamView: View {
             }
         } else {
             showImageSourceSheet.toggle()
+        }
+    }
+
+    private func leaveTeam() async {
+        guard let userId = Auth.auth().currentUser?.uid,
+              let teamId = team.id else { return }
+        
+        do {
+            let batch = db.batch()
+            
+            // 1. Remove user from team members
+            let teamRef = db.collection("teams").document(teamId)
+            batch.updateData([
+                "memberIds": FieldValue.arrayRemove([userId])
+            ], forDocument: teamRef)
+            
+            // 2. Remove team from user's teams
+            let userRef = db.collection("users").document(userId)
+            batch.updateData([
+                "teamIds": FieldValue.arrayRemove([teamId])
+            ], forDocument: userRef)
+            
+            // 3. Execute batch
+            try await batch.commit()
+            print("✅ Successfully left team")
+            
+            // 4. Navigate back to dashboard
+            dismiss()
+            
+        } catch {
+            print("❌ Error leaving team: \(error.localizedDescription)")
+            errorMessage = "Failed to leave team"
+            showError = true
         }
     }
 }
