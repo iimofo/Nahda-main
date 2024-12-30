@@ -16,13 +16,10 @@ struct DashboardView: View {
     @StateObject var taskViewModel = TaskViewModel()
     @StateObject private var userViewModel = UserViewModel()
     @StateObject private var viewModel = DashboardViewModel()
-    private let db = Firestore.firestore()
     
-    // UI States
     @State private var showCreateTeam = false
     @State private var selectedTab = 0
     
-    // Computed Properties
     var leadingTeams: [Team] {
         teamViewModel.teams.filter { $0.leaderId == authViewModel.currentUser?.id }
     }
@@ -31,123 +28,45 @@ struct DashboardView: View {
         teamViewModel.teams.filter { $0.leaderId != authViewModel.currentUser?.id }
     }
     
-    var currentTeamTasks: [Task] {
-        guard let selectedTeam = selectedTab == 0 ? leadingTeams.first : memberTeams.first else {
-            return []
-        }
-        return taskViewModel.tasks.filter { $0.teamId == selectedTeam.id }
+    private func handleTeamRemoval(_ team: Team) async {
+        await viewModel.removeTeam(team)
+        await refreshData()
     }
     
     var body: some View {
         NavigationView {
-            ScrollView {
-                if viewModel.isLoading {
-                    LoadingView("Loading teams...")
-                } else {
-                    VStack(spacing: 24) {
-                        // Welcome Section with Glassmorphism
-                        WelcomeSection(userName: authViewModel.currentUser?.name ?? "User")
-                            .background(
-                                RoundedRectangle(cornerRadius: 20)
-                                    .fill(Color(.systemBackground).opacity(0.8))
-                                    .blur(radius: 0.5)
-                            )
-                            .padding(.horizontal)
-                        
-                        // Stats Cards
-                        HStack(spacing: 16) {
-                            StatCard(
-                                title: "Teams Led",
-                                value: "\(leadingTeams.count)",
-                                trend: "+\(leadingTeams.count) active",
-                                icon: "crown.fill",
-                                color: .orange
-                            )
-                            .transition(.scale.combined(with: .opacity))
-                            
-                            
-                            
-                            StatCard(
-                                title: "Member Of",
-                                value: "\(memberTeams.count)",
-                                trend: "\(memberTeams.count) collaborations",
-                                icon: "person.2.fill",
-                                color: .green
-                            )
-                            .transition(.scale.combined(with: .opacity))
-                        }
-                        .padding(.horizontal)
-                        
-                        // Teams Sections with Tab View
-                        VStack(spacing: 20) {
-                            // Custom Tab Bar
-                            HStack(spacing: 0) {
-                                TabButton(
-                                    title: "Teams I Lead",
-                                    icon: "crown.fill",
-                                    isSelected: selectedTab == 0
-                                ) {
-                                    withAnimation { selectedTab = 0 }
-                                }
-                                Spacer()
-                                Divider()
-                                Spacer()
-                                TabButton(
-                                    title: "Member Teams",
-                                    icon: "person.2.fill",
-                                    isSelected: selectedTab == 1
-                                ) {
-                                    withAnimation { selectedTab = 1 }
-                                }
-                            }
-                            .padding(.horizontal)
-                            
-                            // Teams Grid
-                            LazyVGrid(
-                                columns: [
-                                    GridItem(.flexible()),
-                                    GridItem(.flexible())
-                                ],
-                                spacing: 16
-                            ) {
-                                ForEach(selectedTab == 0 ? leadingTeams : memberTeams) { team in
-                                    NavigationLink(destination: TeamView(team: team)) {
-                                        EnhancedTeamCard(team: team)
-                                            .transition(.scale.combined(with: .opacity))
-                                    }
-                                }
-                            }
-                            .padding(.horizontal)
-                            
-                            if (selectedTab == 0 ? leadingTeams : memberTeams).isEmpty {
-                                EnhancedEmptyStateView(isLeadingTeams: selectedTab == 0)
-                                    .transition(.opacity)
-                            }
-                        }
-                    }
-                    .padding(.vertical)
-                }
-            }
-            .refreshable {
-                await refreshData()
-                await fetchInitialData()
-            }
+            DashboardContent(
+                viewModel: viewModel,
+                teamViewModel: teamViewModel,
+                authViewModel: authViewModel,
+                selectedTab: $selectedTab,
+                showCreateTeam: $showCreateTeam,
+                leadingTeams: leadingTeams,
+                memberTeams: memberTeams,
+                onRefresh: refreshData
+            )
             .navigationTitle("Dashboard")
             .navigationBarItems(
                 leading: SignOutButton(),
                 trailing: CreateTeamButton(showCreateTeam: $showCreateTeam)
             )
-            .background(Color(.systemGroupedBackground))
-            .sheet(isPresented: $showCreateTeam) {
-                CreateTeamView()
-                    .environmentObject(authViewModel)
-                    .environmentObject(teamViewModel)
-            }
-            .alert("Error", isPresented: $viewModel.showError) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                Text(viewModel.errorMessage ?? "An unknown error occurred")
-            }
+            .alert(
+                "Remove Team",
+                isPresented: $viewModel.showRemoveTeamAlert,
+                actions: {
+                    Button("Cancel", role: .cancel) { }
+                    Button("Remove", role: .destructive) {
+                        if let team = viewModel.teamToRemove {
+                            _Concurrency.Task {
+                                await handleTeamRemoval(team)
+                            }
+                        }
+                    }
+                },
+                message: {
+                    Text("Are you sure you want to remove this team? This action cannot be undone and will remove all team data including tasks and member associations.")
+                }
+            )
         }
         .onAppear {
             fetchInitialData()
@@ -156,7 +75,6 @@ struct DashboardView: View {
             fetchInitialData()
         }
         .onChange(of: teamViewModel.teams) { _ in
-            // Refresh when teams are updated
             fetchInitialData()
         }
     }
@@ -209,16 +127,6 @@ struct DashboardView: View {
         }
     }
     
-    private func fetchTeamTasks() {
-        guard let selectedTeam = selectedTab == 0 ? leadingTeams.first : memberTeams.first else {
-            return
-        }
-        
-        taskViewModel.fetchTasks(for: selectedTeam.id ?? "") {
-            // Handle completion if needed
-        }
-    }
-    
     private func refreshData() async {
         await withCheckedContinuation { continuation in
             guard let currentUser = authViewModel.currentUser,
@@ -229,13 +137,201 @@ struct DashboardView: View {
             
             teamViewModel.fetchTeams(teamIds: teamIds) { success in
                 if success {
-                    fetchTeamTasks()
+                    if let firstTeam = leadingTeams.first ?? memberTeams.first {
+                        taskViewModel.fetchTasks(for: firstTeam.id ?? "") {
+                            continuation.resume()
+                        }
+                    } else {
+                        continuation.resume()
+                    }
                 } else {
                     viewModel.showError = true
                     viewModel.errorMessage = "Failed to refresh data"
+                    continuation.resume()
                 }
-                continuation.resume()
             }
+        }
+    }
+}
+
+// Break out the content into a separate view
+struct DashboardContent: View {
+    @ObservedObject var viewModel: DashboardViewModel
+    @ObservedObject var teamViewModel: TeamViewModel
+    @ObservedObject var authViewModel: AuthViewModel
+    @Binding var selectedTab: Int
+    @Binding var showCreateTeam: Bool
+    let leadingTeams: [Team]
+    let memberTeams: [Team]
+    let onRefresh: () async -> Void
+    
+    private func handleTeamRemoval(_ team: Team) async {
+        await viewModel.removeTeam(team)
+        await onRefresh()
+    }
+    
+    var body: some View {
+        ScrollView {
+            if viewModel.isLoading {
+                LoadingView("Loading teams...")
+            } else {
+                VStack(spacing: 24) {
+                    WelcomeSection(userName: authViewModel.currentUser?.name ?? "User")
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color(.systemBackground).opacity(0.8))
+                                .blur(radius: 0.5)
+                        )
+                        .padding(.horizontal)
+                    
+                    StatsSection(leadingTeams: leadingTeams, memberTeams: memberTeams)
+                        .padding(.horizontal)
+                    
+                    TeamsSection(
+                        selectedTab: $selectedTab,
+                        leadingTeams: leadingTeams,
+                        memberTeams: memberTeams,
+                        viewModel: viewModel,
+                        authViewModel: authViewModel
+                    )
+                }
+                .padding(.vertical)
+            }
+        }
+        .background(Color(.systemGroupedBackground))
+        .refreshable {
+            _Concurrency.Task {
+                await onRefresh()
+            }
+        }
+        .sheet(isPresented: $showCreateTeam) {
+            CreateTeamView()
+                .environmentObject(authViewModel)
+                .environmentObject(teamViewModel)
+        }
+        .alert("Error", isPresented: $viewModel.showError) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(viewModel.errorMessage ?? "An unknown error occurred")
+        }
+        .alert(
+            "Remove Team",
+            isPresented: $viewModel.showRemoveTeamAlert,
+            actions: {
+                Button("Cancel", role: .cancel) { }
+                Button("Remove", role: .destructive) {
+                    if let team = viewModel.teamToRemove {
+                        _Concurrency.Task {
+                            await handleTeamRemoval(team)
+                        }
+                    }
+                }
+            },
+            message: {
+                Text("Are you sure you want to remove this team? This action cannot be undone and will remove all team data including tasks and member associations.")
+            }
+        )
+    }
+}
+
+// Break out the stats section into a separate view
+struct StatsSection: View {
+    let leadingTeams: [Team]
+    let memberTeams: [Team]
+    
+    var body: some View {
+        HStack(spacing: 16) {
+            StatCard(
+                title: "Teams Led",
+                value: "\(leadingTeams.count)",
+                trend: "+\(leadingTeams.count) active",
+                icon: "crown.fill",
+                color: .orange
+            )
+            
+            StatCard(
+                title: "Member Of",
+                value: "\(memberTeams.count)",
+                trend: "\(memberTeams.count) collaborations",
+                icon: "person.2.fill",
+                color: .green
+            )
+        }
+    }
+}
+
+// Break out the teams section into a separate view
+struct TeamsSection: View {
+    @Binding var selectedTab: Int
+    let leadingTeams: [Team]
+    let memberTeams: [Team]
+    @ObservedObject var viewModel: DashboardViewModel
+    @ObservedObject var authViewModel: AuthViewModel
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            CustomTabBar(selectedTab: $selectedTab)
+            
+            TeamsGrid(
+                teams: selectedTab == 0 ? leadingTeams : memberTeams,
+                isLeadingTeams: selectedTab == 0,
+                viewModel: viewModel,
+                authViewModel: authViewModel
+            )
+        }
+    }
+}
+
+struct CustomTabBar: View {
+    @Binding var selectedTab: Int
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            TabButton(
+                title: "Teams I Lead",
+                icon: "crown.fill",
+                isSelected: selectedTab == 0
+            ) {
+                withAnimation { selectedTab = 0 }
+            }
+            Spacer()
+            Divider()
+            Spacer()
+            TabButton(
+                title: "Member Teams",
+                icon: "person.2.fill",
+                isSelected: selectedTab == 1
+            ) {
+                withAnimation { selectedTab = 1 }
+            }
+        }
+        .padding(.horizontal)
+    }
+}
+
+struct TeamsGrid: View {
+    let teams: [Team]
+    let isLeadingTeams: Bool
+    @ObservedObject var viewModel: DashboardViewModel
+    @ObservedObject var authViewModel: AuthViewModel
+    
+    var body: some View {
+        LazyVGrid(
+            columns: [GridItem(.flexible()), GridItem(.flexible())],
+            spacing: 16
+        ) {
+            ForEach(teams) { team in
+                NavigationLink(destination: TeamView(team: team)) {
+                    EnhancedTeamCard(team: team)
+                        .environmentObject(viewModel)
+                        .environmentObject(authViewModel)
+                }
+            }
+        }
+        .padding(.horizontal)
+        
+        if teams.isEmpty {
+            EnhancedEmptyStateView(isLeadingTeams: isLeadingTeams)
         }
     }
 }
@@ -243,18 +339,40 @@ struct DashboardView: View {
 struct EnhancedTeamCard: View {
     let team: Team
     @State private var isHovered = false
+    @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var viewModel: DashboardViewModel
+    
+    var isTeamLeader: Bool {
+        authViewModel.currentUser?.id == team.leaderId
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Team Icon
-            Circle()
-                .fill(Color.blue.opacity(0.1))
-                .frame(width: 50, height: 50)
-                .overlay(
-                    Text(team.name.prefix(1).uppercased())
-                        .font(.title2.bold())
-                        .foregroundColor(.blue)
-                )
+            HStack {
+                // Team Icon
+                Circle()
+                    .fill(Color.blue.opacity(0.1))
+                    .frame(width: 50, height: 50)
+                    .overlay(
+                        Text(team.name.prefix(1).uppercased())
+                            .font(.title2.bold())
+                            .foregroundColor(.blue)
+                    )
+                
+                Spacer()
+                
+                // Remove team button (only for team leader)
+                if isTeamLeader {
+                    Button {
+                        viewModel.teamToRemove = team
+                        viewModel.showRemoveTeamAlert = true
+                    } label: {
+                        Image(systemName: "trash")
+                            .foregroundColor(.red)
+                            .frame(width: 44, height: 44) // Apple's minimum touch target size
+                    }
+                }
+            }
             
             VStack(alignment: .leading, spacing: 8) {
                 Text(team.name)
