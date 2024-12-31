@@ -53,6 +53,9 @@ struct TaskDetailView: View {
     @State private var selectedMemberId: String?
     @State private var teamMembers: [User] = []
     
+    @State private var showDinoGame = false
+    @State private var gameScore: Int = 0
+    
     init(task: Task, team: Team) {
         print("📝 Initializing TaskDetailView with task ID: \(task.id ?? "nil")")
         self.task = task
@@ -182,7 +185,46 @@ struct TaskDetailView: View {
                     )
                 }
 
-                Divider()
+                if !task.isCompleted && isAssignedUser {
+                    Section {
+                        VStack(spacing: 12) {
+                            HStack {
+                                Image(systemName: "gamecontroller.fill")
+                                    .foregroundColor(.blue)
+                                Text("Need a Break?")
+                                    .font(.headline)
+                                Spacer()
+                                if gameScore > 0 {
+                                    Text("High Score: \(gameScore)")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            
+                            Button(action: {
+                                showDinoGame = true
+                            }) {
+                                HStack {
+                                    Image(systemName: "figure.run")
+                                        .font(.title2)
+                                    Text("Play Dino Runner")
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.blue.opacity(0.1))
+                                .foregroundColor(.blue)
+                                .cornerRadius(10)
+                            }
+                            
+                            Text("Take a quick break to refresh your mind")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding()
+                        .background(Color(.systemGroupedBackground))
+                        .cornerRadius(12)
+                    }
+                }
 
                 Text("Comments")
                     .font(.headline)
@@ -276,6 +318,10 @@ struct TaskDetailView: View {
                     showCompletionAnimation = false
                 }
             }
+        }
+        .fullScreenCover(isPresented: $showDinoGame) {
+            DinoGameView()
+                .edgesIgnoringSafeArea(.all)
         }
     }
 
